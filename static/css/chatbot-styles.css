@@ -24,6 +24,7 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     cursor: pointer;
     transition: transform 0.2s, background-color 0.2s;
+    z-index: 1000;
   }
   
   #chatbot-icon:hover {
@@ -41,9 +42,10 @@ body {
     background-color: #1f1f1f;
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-    display: flex;
+    display: none;
     flex-direction: column;
     overflow: hidden;
+    z-index: 1000;
   }
   
   /* Hide Chatbot Initially */

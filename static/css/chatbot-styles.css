@@ -42,7 +42,7 @@ body {
     background-color: #1f1f1f;
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-    display: none;
+    display: flex;
     flex-direction: column;
     overflow: hidden;
     z-index: 1000;

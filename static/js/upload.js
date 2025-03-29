@@ -37,11 +37,36 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
-            resultPlaceholder.innerHTML = `<p>Prediction: <strong>${data.prediction}</strong></p>`;
+            if (data.doc_id) {
+                console.log("Document ID:", data.doc_id);
+                resultPlaceholder.innerHTML = `<p>Processing... Please wait.</p>`;
+
+                // Fetch latest result using the doc_id
+                getPredictionResult(data.doc_id);
+            } else {
+                resultPlaceholder.innerHTML = `<p style="color: red;">Failed to classify. Try again.</p>`;
+            }
         })
         .catch(error => {
             console.error("Error:", error);
             resultPlaceholder.innerHTML = `<p style="color: red;">Failed to classify. Try again.</p>`;
         });
     });
+
+    // Function to fetch prediction result from Firestore
+    function getPredictionResult(docId) {
+        fetch(`https://recycler-api.onrender.com/get_prediction/${docId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.prediction) {
+                resultPlaceholder.innerHTML = `<p>Prediction: <strong>${data.prediction}</strong></p>`;
+            } else {
+                resultPlaceholder.innerHTML = `<p style="color: red;">Failed to get result. Try again.</p>`;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            resultPlaceholder.innerHTML = `<p style="color: red;">Failed to get result. Try again.</p>`;
+        });
+    }
 });

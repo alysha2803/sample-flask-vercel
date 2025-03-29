@@ -37,21 +37,21 @@
         </div>
         <div id="chatbot-body">
             <div id="chatbot-messages"></div>
-        </div> 
+        </div>
         <div id="chatbot-input-container">
             <input type="text" id="chatbot-input" placeholder="Ask a question">
-        </div>   
+        </div>
         <button id="send-btn">Send</button>
     </div>
 
     <!-- Load Chatbot Styles and Scripts -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot-styles.css') }}">
     <script src="{{ url_for('static', filename='js/chatbot-script.js') }}"></script>
-
 </footer>
 
-
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<!-- Base scripts block that all pages can extend -->
 {% block scripts %}{% endblock %}
 </body>
 </html>

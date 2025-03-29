@@ -11,11 +11,11 @@
 <section class="dashboard-stats">
     <div class="stat-card">
         <h3>Total Classifications</h3>
-        <p class="stat-number">1,248</p>
+        <p class="stat-number" id="total-classifications">Loading...</p>
     </div>
     <div class="stat-card">
         <h3>Most Common</h3>
-        <p class="stat-number">Plastic</p>
+        <p class="stat-number" id="most-common">Loading...</p>
     </div>
     <div class="stat-card">
         <h3>Today's Count</h3>
@@ -31,15 +31,13 @@
     <div class="chart-container">
         <h3>Classification Distribution</h3>
         <div class="chart-placeholder">
-            <!-- Placeholder for chart -->
-            <p>Pie chart will be displayed here</p>
+            <canvas id="pie-chart"></canvas>
         </div>
     </div>
     <div class="chart-container">
         <h3>Weekly Classifications</h3>
         <div class="chart-placeholder">
-            <!-- Placeholder for chart -->
-            <p>Bar chart will be displayed here</p>
+            <canvas id="bar-chart"></canvas>
         </div>
     </div>
 </section>
@@ -82,5 +80,7 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

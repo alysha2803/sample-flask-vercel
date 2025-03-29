@@ -1,101 +1,38 @@
 {% extends "base.html" %}
-
 {% block title %}Recycler - Reports{% endblock %}
-<!DOCTYPE html>
-
 {% block content %}
 <section class="reports-header">
-    <h1>Recycling Reports</h1>
+    <h1>Recycling Classification Reports</h1>
     <p>Generate and download reports based on classification data.</p>
 </section>
 
-<section class="report-options">
-    <div class="report-card">
-        <h3>Time Analysis</h3>
-        <p>Trend analysis showing classification patterns over time.</p>
-        <button class="btn primary">Generate Report</button>
-    </div>
-
-    <div class="report-card">
-        <h3>Environmental Impact</h3>
-        <p>Estimated environmental impact of recycled materials.</p>
-        <button class="btn primary">Generate Report</button>
-    </div>
-
-    <div class="report-card">
-        <h3>Summary</h3>
-        <p>Overview of all classifications by category with percentages.</p>
-        <button class="btn primary">Generate Report</button>
+<section class="report-filters">
+    <div class="filter-container">
+        <label for="category-filter">Filter by Category:</label>
+        <select id="category-filter">
+            <option value="">All Items</option>
+            <option value="Recyclable">Recyclable Items</option>
+            <option value="Non-Recyclable">Non-Recyclable Items</option>
+        </select>
+        <button id="generate-report-btn" class="btn primary">Generate PDF Report</button>
     </div>
 </section>
 
-<section class="custom-report">
-    <h2>Custom Report</h2>
-    <form class="custom-report-form">
-        <div class="form-group">
-            <label for="start-date">Start Date</label>
-            <input type="date" id="start-date" name="start_date">
-        </div>
-
-        <div class="form-group">
-            <label for="end-date">End Date</label>
-            <input type="date" id="end-date" name="end_date">
-        </div>
-
-        <div class="form-group">
-            <label for="categories">Categories</label>
-            <select id="categories" name="categories" multiple>
-                <option value="plastic">Plastic</option>
-                <option value="paper">Paper</option>
-                <option value="metal">Metal</option>
-                <option value="glass">Glass</option>
-                <option value="ewaste">E-Waste</option>
-                <option value="fabric">Fabric</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="format">Report Format</label>
-            <select id="format" name="format">
-                <option value="csv">CSV</option>
-                <option value="pdf">PDF</option>
-                <option value="json">JSON</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn primary">Generate Custom Report</button>
-    </form>
-</section>
-
-<section class="report-history">
-    <h2>Recent Reports</h2>
+<section class="report-table-section">
+    <div class="loading-indicator" id="loading-data">
+        Loading data from Firestore...
+    </div>
     <table class="reports-table">
         <thead>
         <tr>
-            <th>Generated Date</th>
-            <th>Report Type</th>
-            <th>Format</th>
-            <th>Action</th>
+            <th>Image Name</th>
+            <th>Prediction</th>
         </tr>
         </thead>
         <tbody>
+        <!-- Table will be populated by JavaScript -->
         <tr>
-            <td>Mar 18, 2025</td>
-            <td>Classification Summary</td>
-            <td>PDF</td>
-            <td><a href="#" class="download-link">Download</a></td>
-        </tr>
-        <tr>
-            <td>Mar 17, 2025</td>
-            <td>Full Data Export</td>
-            <td>CSV</td>
-            <td><a href="#" class="download-link">Download</a></td>
-        </tr>
-        <tr>
-            <td>Mar 15, 2025</td>
-            <td>Custom Report</td>
-            <td>JSON</td>
-            <td><a href="#" class="download-link">Download</a></td>
+            <td colspan="2">Loading data...</td>
         </tr>
         </tbody>
     </table>
@@ -103,5 +40,14 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+<!-- Include Firebase App and Firestore from CDN -->
+<script type="module" src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js"></script>
+
+<!-- Include jsPDF from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Our custom reports script -->
+<script type="module" src="{{ url_for('static', filename='js/reports.js') }}"></script>
 {% endblock %}

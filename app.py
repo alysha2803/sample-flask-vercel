@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from firebase_config import db  # Import your Firebase configuration
 import os

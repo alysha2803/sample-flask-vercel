@@ -1,33 +1,26 @@
-import os
-from flask import Flask, jsonify
-from google.cloud import firestore
-from google.oauth2 import service_account
-from flask_cors import CORS  # ✅ Import CORS
-
-# Set Firebase JSON file path
-json_path = "cubachups1-firebase-adminsdk-fbsvc-9dc37da141.json"
-
-# Load Firebase credentials
-cred = service_account.Credentials.from_service_account_file(json_path)
-db = firestore.Client(credentials=cred)
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# ✅ Allow requests from your Next.js frontend (localhost:3000)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route('/summary', methods=['GET'])
-def get_summary():
-    predictions_ref = db.collection('test_collection')  
-    docs = predictions_ref.stream()
+@app.route('/dashboard')
+def dashboard():
+    # This will eventually
+    # fetch data for dashboard
+    return render_template('dashboard.html')
 
-    prediction_counts = {}
-    for doc in docs:
-        prediction = doc.to_dict().get("prediction", "Unknown")
-        prediction_counts[prediction] = prediction_counts.get(prediction, 0) + 1  
+@app.route('/upload')
+def upload():
+    # This will eventually handle file uploads and model predictions
+    return render_template('upload.html')
 
-    data = [{"prediction": key, "count": value} for key, value in prediction_counts.items()]
-    return jsonify(data)
+@app.route('/reports')
+def reports():
+    # This will eventually handle report generation
+    return render_template('reports.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

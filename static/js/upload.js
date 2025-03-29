@@ -6,6 +6,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const previewContainer = document.querySelector(".image-preview");
     const resultPlaceholder = document.querySelector(".result-placeholder");
 
+     // Auto display image preview when file is selected
+    fileInput.addEventListener("change", function () {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Stop form from redirecting
 
@@ -17,13 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const formData = new FormData();
         formData.append("file", file);
-
-        // Show image preview
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-        };
-        reader.readAsDataURL(file);
 
         // Send AJAX request
         fetch("https://recycler-api.onrender.com/predict", {

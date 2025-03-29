@@ -20,7 +20,7 @@ def upload_file():
     """Handles file upload to the server"""
     if 'image' not in request.files:
         return jsonify({'error': 'No file part'}), 400  # Return error if no file is uploaded
-
+    
     file = request.files['image']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400  # Return error if no file is selected
@@ -36,7 +36,7 @@ def add_data():
     """Handles adding JSON data to Firestore"""
     data = request.json  # Get data from request body
     doc_id = add_data_to_firestore(data)  # Call function from firestore_service.py
-
+    
     return jsonify({"message": "Data added successfully", "id": doc_id})  # Return success response with document ID
 
 if __name__ == '__main__':

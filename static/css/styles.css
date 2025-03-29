@@ -446,12 +446,3 @@ input[type="file"] {
         transform: rotate(360deg);
     }
 }
-
-.image-preview img {
-    max-width: 100%;
-    max-height: 300px; /* Adjust size */
-    display: block;
-    margin: auto;
-    object-fit: contain;
-}
-

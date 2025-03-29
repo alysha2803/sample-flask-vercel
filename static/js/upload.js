@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const fileInput = document.getElementById("file-upload");
     const previewContainer = document.querySelector(".image-preview");
     const resultPlaceholder = document.querySelector(".result-placeholder");
+    const submitButton = form.querySelector("button[type='submit']");
+
+    let isSubmitting = false; // Flag to prevent multiple requests
+
 
      // Auto display image preview when file is selected
     fileInput.addEventListener("change", function () {
@@ -20,6 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
     
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Stop form from redirecting
+
+        if (isSubmitting) return; // Prevent multiple submissions
+        isSubmitting = true;
+        submitButton.disabled = true;
+        submitButton.innerHTML = `Processing <span class="loading-spinner"></span>`;
+
 
         const file = fileInput.files[0];
         if (!file) {
@@ -53,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Function to fetch prediction result from Firestore
+   // Function to fetch prediction result from Firestore
     function getPredictionResult(docId) {
         fetch(`https://recycler-api.onrender.com/get_prediction/${docId}`)
         .then(response => response.json())
@@ -67,6 +77,16 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => {
             console.error("Error:", error);
             resultPlaceholder.innerHTML = `<p style="color: red;">Failed to get result. Try again.</p>`;
+        })
+        .finally(() => {
+            resetButton();
         });
+    }
+
+     // Function to reset button after processing
+    function resetButton() {
+        isSubmitting = false;
+        submitButton.disabled = false;
+        submitButton.innerHTML = "Classify Now";
     }
 });

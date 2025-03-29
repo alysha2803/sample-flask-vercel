@@ -10,15 +10,40 @@ document.addEventListener('DOMContentLoaded', function() {
         projectId: "cubachups1"
     };
 
-    // Initialize Firebase
-    try {
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        setupUIHandlers(db);
-    } catch (error) {
-        console.error("Error initializing Firebase:", error);
-        showError("Failed to initialize Firebase. Please check console for details.");
-    }
+    // Check if we're on Vercel and need to fetch Firebase status
+    const checkFirebaseStatus = async () => {
+        try {
+            const response = await fetch('/api/firebase-config');
+            const data = await response.json();
+            return data.status === 'connected';
+        } catch (error) {
+            console.error("Error checking Firebase status:", error);
+            return false;
+        }
+    };
+
+    // Initialize Firebase with error handling
+    const initializeFirebase = async () => {
+        try {
+            // First check if our backend Firebase is properly configured
+            const isBackendFirebaseAvailable = await checkFirebaseStatus();
+
+            if (!isBackendFirebaseAvailable) {
+                console.warn("Backend Firebase is not available. Some features may not work.");
+            }
+
+            // Initialize client-side Firebase anyway
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            setupUIHandlers(db);
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+            showError("Failed to initialize Firebase. Please check console for details.");
+        }
+    };
+
+    // Start initialization
+    initializeFirebase();
 });
 
 function setupUIHandlers(db) {
@@ -94,7 +119,7 @@ async function fetchImages(db, category = "", tableBody, loadingIndicator) {
     }
 }
 
-// Generate PDF Report
+// Generate PDF Report (same as your original implementation)
 function generatePDFReport(category = "") {
     try {
         // Check if jsPDF is available

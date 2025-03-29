@@ -34,55 +34,42 @@ document.addEventListener("DOMContentLoaded", function () {
         const file = fileInput.files[0];
         if (!file) {
             alert("Please select a file first!");
+            resetButton(); // Reset button if no file selected
             return;
         }
 
         const formData = new FormData();
         formData.append("file", file);
 
-        // Send AJAX request
-        fetch("https://recycler-api.onrender.com/predict", {
-            method: "POST",
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.doc_id) {
-                console.log("Document ID:", data.doc_id);
-                resultPlaceholder.innerHTML = `<p>Processing... Please wait.</p>`;
-
-                // Fetch latest result using the doc_id
-                getPredictionResult(data.doc_id);
-            } else {
-                resultPlaceholder.innerHTML = `<p style="color: red;">Failed to classify. Try again.</p>`;
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            resultPlaceholder.innerHTML = `<p style="color: red;">Failed to classify. Try again.</p>`;
-        });
+     
+    // **Create a timeout promise for 5 seconds**
+    const timeoutPromise = new Promise((resolve) => {
+        setTimeout(() => resolve({ error: "Timeout" }), 20000); // If no response in 5s, resolve with error
     });
 
-   // Function to fetch prediction result from Firestore
-    function getPredictionResult(docId) {
-        fetch(`https://recycler-api.onrender.com/get_prediction/${docId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.prediction) {
-                resultPlaceholder.innerHTML = `<p>Prediction: <strong>${data.prediction}</strong></p>`;
-            } else {
-                resultPlaceholder.innerHTML = `<p style="color: red;">Failed to get result. Try again.</p>`;
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            resultPlaceholder.innerHTML = `<p style="color: red;">Failed to get result. Try again.</p>`;
-        })
-        .finally(() => {
-            resetButton();
-        });
-    }
-
+    // **Send AJAX request with timeout handling**
+    Promise.race([
+        fetch("https://recycler-api.onrender.com/predict", { method: "POST", body: formData })
+            .then(response => response.json()), // API request
+        timeoutPromise // Timeout handling
+    ])
+    .then(data => {
+        if (data.error === "Timeout") {
+            resultPlaceholder.innerHTML = `<p style="color: red;">Server is taking too long. Try again later.</p>`;
+        } else if (data.prediction) {
+            resultPlaceholder.innerHTML = `<p>Prediction: <strong>${data.prediction}</strong></p>`;
+        } else {
+            resultPlaceholder.innerHTML = `<p style="color: red;">Failed to classify. Try again.</p>`;
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        resultPlaceholder.innerHTML = `<p style="color: red;">Failed to classify. Try again.</p>`;
+    })
+    .finally(() => {
+        resetButton(); // Always reset button after processing
+    });
+});
      // Function to reset button after processing
     function resetButton() {
         isSubmitting = false;
